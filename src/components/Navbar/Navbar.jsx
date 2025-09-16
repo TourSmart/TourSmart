@@ -19,24 +19,38 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 shadow-xl sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="text-xl font-bold text-primary">
-                TourSmart Jharkhand
+        <div className="flex justify-between h-20 items-center">
+          <div className="flex items-center">
+            <div className="flex-shrink-0">
+              <Link to="/" className="flex items-center space-x-3 group">
+                <div className="flex items-center justify-center bg-transparent">
+                  {/* <img 
+                    src="/public/logo.svg" 
+                    alt="TourSmart Logo" 
+                    className="h-12 w-auto transform group-hover:scale-105 transition-transform duration-300"
+                  /> */}
+                </div>
+                <div>
+                  <span className="text-2xl font-extrabold text-white">
+                    TourSmart
+                  </span>
+                  <span className="block text-sm text-purple-200 font-medium -mt-1">
+                    Explore Jharkhand
+                  </span>
+                </div>
               </Link>
             </div>
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <div className="hidden md:ml-10 md:flex items-center space-x-1">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                     location.pathname === item.href
-                      ? 'border-primary text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                      ? 'bg-white/10 text-white shadow-lg backdrop-blur-sm'
+                      : 'text-purple-100 hover:bg-white/5 hover:text-white'
                   }`}
                 >
                   {item.name}
@@ -44,10 +58,10 @@ const Navbar = () => {
               ))}
             </div>
           </div>
-          <div className="-mr-2 flex items-center sm:hidden">
+          <div className="-mr-2 flex items-center md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+              className="inline-flex items-center justify-center p-2 rounded-md text-purple-200 hover:text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pink-400 transition-all"
             >
               <span className="sr-only">Open main menu</span>
               {isOpen ? (
@@ -62,16 +76,16 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="sm:hidden">
-          <div className="pt-2 pb-3 space-y-1">
+        <div className={`${isOpen ? 'block' : 'hidden'} md:hidden absolute top-20 left-0 right-0 bg-gradient-to-b from-indigo-900 to-blue-900 shadow-2xl rounded-b-xl py-2 z-50 backdrop-blur-lg`}>
+          <div className="px-2 pt-2 pb-3 space-y-1">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 to={item.href}
-                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
+                className={`block px-4 py-3 rounded-lg mx-2 text-base font-medium ${
                   location.pathname === item.href
-                    ? 'bg-primary-50 border-primary-500 text-primary-700'
-                    : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800'
+                    ? 'bg-white/10 text-white backdrop-blur-sm'
+                    : 'text-purple-100 hover:bg-white/5 hover:text-white'
                 }`}
                 onClick={() => setIsOpen(false)}
               >
