@@ -1,4 +1,5 @@
-import { Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import Home from './pages/Home';
@@ -12,12 +13,27 @@ import Feedback from './pages/Feedback';
 import AdminDashboard from './pages/AdminDashboard';
 
 function App() {
+  const [showNavbar, setShowNavbar] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
+  // Reset navbar visibility when navigating away from home
+  useEffect(() => {
+    if (!isHomePage) {
+      setShowNavbar(true);
+    }
+  }, [isHomePage]);
+
+  const handleSlideshowComplete = () => {
+    setShowNavbar(true);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
+      {showNavbar && <Navbar />}
       <main className="flex-grow">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home onSlideshowComplete={handleSlideshowComplete} />} />
           <Route path="/destinations" element={<Destinations />} />
           <Route path="/itinerary" element={<ItineraryPlanner />} />
           <Route path="/chatbot" element={<Chatbot />} />
