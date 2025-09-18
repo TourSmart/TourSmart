@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -20,10 +20,15 @@ import {
   CheckCircle,
   Sparkles,
   Zap,
+  Briefcase,
+  Sun,
+  Moon,
+  Utensils,
+  Camera
 } from "lucide-react";
 
-// Updated: Use the new image URL for the hero background
-const heroImage = "https://images.unsplash.com/photo-1438382458652-54431bf59e01?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max";
+// Image for hero section
+const heroImage = "https://th.bing.com/th/id/R.aec51b613a7db75efa6d8a15b896e17a?rik=AAuqhAC%2b9ZxEJQ&riu=http%3a%2f%2fimages.unsplash.com%2fphoto-1438382458652-54431bf59e01%3fixlib%3drb-1.2.1%26q%3d80%26fm%3djpg%26crop%3dentropy%26cs%3dtinysrgb%26w%3d1080%26fit%3dmax&ehk=hGgQ0hukJZYJnlr8518zb23eRtkXgZDa2azn%2fqPk980%3d&risl=&pid=ImgRaw&r=0";
 
 // Interests data
 const interests = [
@@ -53,7 +58,6 @@ const travelStyles = [
 const HeroSection = ({ onGetStarted }) => {
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
-      {/* Dynamic Background */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out animate-zoom-in"
         style={{ backgroundImage: `url(${heroImage})` }}
@@ -61,7 +65,6 @@ const HeroSection = ({ onGetStarted }) => {
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       </div>
 
-      {/* Main Content with subtle parallax */}
       <div className="relative z-10 text-center px-4 max-w-5xl mx-auto transform translate-y-0 animate-fade-in">
         <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight drop-shadow-lg">
           <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
@@ -71,11 +74,9 @@ const HeroSection = ({ onGetStarted }) => {
           <br />
           <span className="text-white">Awaits.</span>
         </h1>
-
         <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-in" style={{ animationDelay: '0.5s' }}>
           Let AI craft your personalized travel itinerary. Discover hidden gems and must-see destinations tailored just for you.
         </p>
-
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-slide-up" style={{ animationDelay: '1s' }}>
           <Button
             size="lg"
@@ -87,8 +88,7 @@ const HeroSection = ({ onGetStarted }) => {
           </Button>
         </div>
       </div>
-
-      {/* Animated Icons */}
+      
       <div className="absolute top-1/4 left-1/4 text-purple-400/30 animate-float" style={{ animationDelay: '0s' }}>
         <Plane size={80} />
       </div>
@@ -99,7 +99,7 @@ const HeroSection = ({ onGetStarted }) => {
   );
 };
 
-// Travel Questionnaire Component
+// Travel Questionnaire Component (REDESIGNED - Light Theme)
 const TravelQuestionnaire = ({ onSubmit, onBack }) => {
   const [preferences, setPreferences] = useState({
     destination: "",
@@ -108,10 +108,31 @@ const TravelQuestionnaire = ({ onSubmit, onBack }) => {
     interests: [],
     travelStyle: "balanced",
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(preferences);
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Fake API call for demonstration
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      const mockItinerary = Array.from({ length: preferences.days }, (_, i) => ({
+        day: i + 1,
+        date: `Day ${i+1}`,
+        theme: `Exploring the best of ${preferences.destination}`,
+        totalCost: Math.round(preferences.budget / preferences.days),
+        items: [{activity: 'Morning Adventure', cost: '$50', location: 'Central Landmark', description: 'Start your day with an exciting activity.'}, {activity: 'Local Cuisine Lunch', cost: '$30', location: 'Famous Local Restaurant', description: 'Taste the authentic flavors of the region.'}, {activity: 'Evening Relaxation', cost: '$20', location: 'Scenic Viewpoint', description: 'Watch the sunset from a beautiful spot.'}]
+      }));
+      onSubmit(mockItinerary, preferences);
+    } catch (err) {
+      console.error("Error creating itinerary:", err);
+      setError("Failed to create itinerary. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleInterest = (interestId) => {
@@ -124,164 +145,144 @@ const TravelQuestionnaire = ({ onSubmit, onBack }) => {
     });
   };
 
-  const selectedInterests = preferences.interests;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-gray-200 py-12 px-4">
+    <div className="min-h-screen bg-gray-100 text-slate-800 py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10 animate-fade-in">
-          <h2 className="text-4xl font-bold text-white mb-2">
-            Let's Plan Your Perfect Trip <Sparkles className="inline text-yellow-300 animate-pulse" />
+          <h2 className="text-4xl font-bold text-slate-900 mb-2">
+            Let's Plan Your Perfect Trip <Sparkles className="inline text-yellow-400 animate-pulse" />
           </h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          <p className="text-slate-600 text-lg max-w-2xl mx-auto">
             Tell us about your travel dreams and we'll create a personalized itinerary just for you.
           </p>
         </div>
 
-        <Card className="shadow-2xl animate-slide-up bg-gray-800/60 backdrop-blur-md border-gray-700">
+        <Card className="shadow-2xl animate-slide-up bg-white rounded-2xl border-gray-200">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-2xl font-semibold text-white">
-              <Heart className="text-rose-400" size={28} />
+            <CardTitle className="flex items-center gap-2 text-2xl font-semibold text-slate-800">
+              <Heart className="text-rose-500" size={28} />
               Your Travel Preferences
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-6 sm:p-8">
             <form onSubmit={handleSubmit} className="space-y-10">
-              {/* Destination */}
               <div className="space-y-4 animate-fade-in">
-                <Label htmlFor="destination" className="flex items-center gap-2 text-lg font-semibold text-white">
-                  <MapPin className="text-purple-400" size={20} />
+                <Label htmlFor="destination" className="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                  <MapPin className="text-purple-500" size={20} />
                   Where would you like to go?
                 </Label>
                 <Input
                   id="destination"
-                  placeholder="e.g., Paris, Tokyo, Bali..."
+                  placeholder="e.g., Jharkhand, India"
                   value={preferences.destination}
                   onChange={(e) => setPreferences({ ...preferences, destination: e.target.value })}
-                  className="text-lg p-6 border-2 focus:border-purple-500 transition-colors bg-gray-700/50 text-white placeholder:text-gray-500"
+                  className="text-lg p-6 border-2 border-gray-300 focus:border-purple-500 transition-colors bg-gray-50 text-slate-900 placeholder:text-gray-400 rounded-lg"
                   required
                 />
               </div>
 
-              {/* Duration & Budget */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.2s' }}>
-                  <Label className="flex items-center gap-2 text-lg font-semibold text-white">
-                    <Calendar className="text-cyan-400" size={20} />
+                  <Label className="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                    <Calendar className="text-cyan-500" size={20} />
                     How many days?
                   </Label>
                   <div className="flex items-center gap-4">
                     <Slider
                       value={[preferences.days]}
                       onValueChange={(value) => setPreferences({ ...preferences, days: value[0] })}
-                      max={30}
-                      min={1}
-                      step={1}
-                      className="w-full [&>span:first-child]:bg-purple-500"
+                      max={30} min={1} step={1}
+                      className="w-full"
                     />
-                    <div className="w-16 text-center font-bold text-xl text-purple-400">{preferences.days}</div>
+                    <div className="w-16 text-center font-bold text-xl text-cyan-600">{preferences.days}</div>
                   </div>
                 </div>
-
                 <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-                  <Label className="flex items-center gap-2 text-lg font-semibold text-white">
-                    <DollarSign className="text-yellow-400" size={20} />
+                  <Label className="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                    <DollarSign className="text-yellow-500" size={20} />
                     Budget (per person)
                   </Label>
                   <div className="flex items-center gap-4">
                     <Slider
                       value={[preferences.budget]}
                       onValueChange={(value) => setPreferences({ ...preferences, budget: value[0] })}
-                      max={10000}
-                      min={100}
-                      step={100}
-                      className="w-full [&>span:first-child]:bg-purple-500"
+                      max={10000} min={100} step={100}
+                      className="w-full"
                     />
-                    <div className="w-20 text-center font-bold text-xl text-purple-400">${preferences.budget}</div>
+                    <div className="w-20 text-center font-bold text-xl text-yellow-600">${preferences.budget}</div>
                   </div>
                 </div>
               </div>
 
-              {/* Interests */}
               <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-                <Label className="flex items-center gap-2 text-lg font-semibold text-white">
-                  <Compass className="text-orange-400" size={20} />
-                  What interests you? (Select all that apply)
+                <Label className="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                  <Compass className="text-orange-500" size={20} />
+                  What interests you?
                 </Label>
-                <div className=" grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {interests.map((interest, index) => (
-                    <Badge
+                <div className="flex flex-wrap gap-3">
+                  {interests.map((interest) => (
+                    <button
                       key={interest.id}
-                      variant="outline"
-                      className={`
-                        text-white p-4 cursor-pointer transition-all duration-300 hover:scale-105 rounded-xl
-                        border-2 hover:shadow-lg
-                        ${selectedInterests.includes(interest.id)
-                          ? 'bg-gradient-to-br from-blue-500 to-purple-600 text-white border-purple-500 shadow-xl'
-                          : 'bg-gray-700/50 hover:bg-gray-700 border-gray-700'
-                        }
-                      `}
-                      style={{ animationDelay: `${index * 0.05}s` }}
+                      type="button"
+                      className={`px-4 py-2 text-sm font-medium border-2 rounded-full transition-all duration-200 ${preferences.interests.includes(interest.id) ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white border-transparent shadow-md' : 'bg-white text-slate-700 border-gray-300 hover:border-gray-400 hover:bg-gray-50'}`}
                       onClick={() => toggleInterest(interest.id)}
                     >
-                      <div className="flex flex-col items-center gap-2">
-          
-                        <span className="text-l font-medium text-center p-2">{interest.name}</span>
-                      </div>
-                    </Badge>
+                      {interest.name}
+                    </button>
                   ))}
                 </div>
               </div>
 
-              {/* Travel Style */}
               <div className="space-y-4 animate-fade-in" style={{ animationDelay: '0.5s' }}>
-                <Label className="flex items-center gap-2 text-lg font-semibold text-white">
-                  <Star className="text-teal-400" size={20} />
+                <Label className="flex items-center gap-2 text-lg font-semibold text-slate-800">
+                  <Star className="text-teal-500" size={20} />
                   What's your travel style?
                 </Label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {travelStyles.map((style) => (
                     <div
                       key={style.id}
-                      className={`p-5 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:border-purple-500/50 relative ${
-                        preferences.travelStyle === style.id
-                          ? 'border-purple-500 bg-purple-500/10 shadow-lg'
-                          : 'border-gray-700 bg-gray-700/50'
-                      }`}
+                      className={`p-5 border-2 rounded-xl cursor-pointer transition-all duration-300 relative ${preferences.travelStyle === style.id ? 'border-purple-500 bg-purple-50 shadow-lg' : 'border-gray-300 bg-white hover:border-purple-300'}`}
                       onClick={() => setPreferences({ ...preferences, travelStyle: style.id })}
                     >
                       {preferences.travelStyle === style.id && (
-                        <CheckCircle className="h-6 w-6 text-purple-500 absolute top-2 right-2" />
+                        <CheckCircle className="h-6 w-6 text-white bg-purple-500 rounded-full p-1 absolute top-2 right-2" />
                       )}
                       <div className="flex items-center gap-3">
                         <span className="text-3xl">{style.icon}</span>
                         <div>
-                          <div className="font-semibold text-white">{style.name}</div>
-                          <div className="text-sm text-gray-400">{style.description}</div>
+                          <div className="font-semibold text-slate-800">{style.name}</div>
+                          <div className="text-sm text-slate-500">{style.description}</div>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
+              
+              {error && (
+                <div className="text-center text-rose-500 font-semibold animate-fade-in">
+                  <p>Error: {error}</p>
+                </div>
+              )}
 
-              {/* Submit Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 pt-6 animate-fade-in" style={{ animationDelay: '0.6s' }}>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={onBack}
-                  className="flex-1 text-purple-400 hover:bg-purple-900 border-purple-400"
+                  className="flex-1 py-3 text-lg bg-white border-gray-300 text-slate-700 hover:bg-gray-100"
                 >
                   <ChevronLeft className="mr-2 h-5 w-5" />
                   Back to Home
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1 bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold hover:opacity-90 shadow-lg transition-all duration-300"
-                  disabled={!preferences.destination || preferences.interests.length === 0}
+                  className="flex-1 py-3 text-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold hover:opacity-90 shadow-lg"
+                  disabled={!preferences.destination || preferences.interests.length === 0 || loading}
                 >
-                  Create My Itinerary <Zap className="ml-2 inline h-4 w-4 animate-pulse" />
+                  {loading ? "Creating..." : "Create My Itinerary"} 
+                  {!loading && <Zap className="ml-2 h-5 w-5" />}
                 </Button>
               </div>
             </form>
@@ -292,201 +293,136 @@ const TravelQuestionnaire = ({ onSubmit, onBack }) => {
   );
 };
 
-// Itinerary Display Component
-const ItineraryDisplay = ({ preferences, onBack, onStartOver }) => {
-  const [itinerary, setItinerary] = useState([]);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Simulate AI generating itinerary
-    const generateItinerary = () => {
-      setLoading(true);
-
-      setTimeout(() => {
-        const mockItinerary = [];
-        const interestMap = interests.reduce((acc, curr) => ({ ...acc, [curr.id]: curr.icon }), {});
-
-        for (let day = 1; day <= preferences.days; day++) {
-          const themes = ["Explore & Discover", "Cultural Immersion", "Adventure Day", "Relaxation", "Local Experiences"];
-          const theme = themes[(day - 1) % themes.length];
-
-          const activities = [
-            {
-              time: "9:00 AM",
-              activity: `Morning ${preferences.interests[0] || 'exploration'} tour`,
-              location: `${preferences.destination} City Center`,
-              duration: "2 hrs",
-              cost: "$" + Math.floor(Math.random() * 50 + 20),
-              type: preferences.interests[0] || "culture",
-              icon: interestMap[preferences.interests[0]] || "🚶",
-              description: `Start your day with an immersive experience in ${preferences.destination}'s most iconic location.`
-            },
-            {
-              time: "12:00 PM",
-              activity: "Local cuisine lunch",
-              location: "Traditional Restaurant",
-              duration: "1.5 hrs",
-              cost: "$" + Math.floor(Math.random() * 40 + 15),
-              type: "food",
-              icon: "🍜",
-              description: "Savor authentic local flavors at a highly-rated traditional restaurant."
-            },
-            {
-              time: "2:30 PM",
-              activity: `${preferences.interests[1] || 'Sightseeing'} experience`,
-              location: "Historic District",
-              duration: "3 hrs",
-              cost: "$" + Math.floor(Math.random() * 60 + 30),
-              type: preferences.interests[1] || "culture",
-              icon: interestMap[preferences.interests[1]] || "📸",
-              description: "Dive deep into the local history and culture with expert guides."
-            },
-            {
-              time: "6:00 PM",
-              activity: "Sunset viewing",
-              location: "Scenic Viewpoint",
-              duration: "1 hr",
-              cost: "Free",
-              type: "nature",
-              icon: "🌅",
-              description: "End your day with breathtaking sunset views from the best vantage point."
-            },
-            {
-              time: "8:00 PM",
-              activity: "Dinner & entertainment",
-              location: "Local Entertainment District",
-              duration: "2 hrs",
-              cost: "$" + Math.floor(Math.random() * 80 + 40),
-              type: "nightlife",
-              icon: "🎶",
-              description: "Experience the vibrant nightlife with dinner and local entertainment."
-            }
-          ];
-
-          const totalCost = activities.reduce((sum, item) => {
-            const cost = item.cost === "Free" ? 0 : parseInt(item.cost.replace("$", ""));
-            return sum + cost;
-          }, 0);
-
-          mockItinerary.push({
-            day,
-            date: `Day ${day}`,
-            theme,
-            items: activities,
-            totalCost
-          });
-        }
-
-        setItinerary(mockItinerary);
-        setLoading(false);
-      }, 2000);
-    };
-
-    generateItinerary();
-  }, [preferences]);
-
-  const totalBudget = itinerary.reduce((sum, day) => sum + day.totalCost, 0);
-
-  if (loading) {
+// Itinerary Display Component (REDESIGNED)
+const ItineraryDisplay = ({ itinerary, preferences, onBack, onStartOver }) => {
+  if (!itinerary || itinerary.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white flex items-center justify-center">
-        <div className="text-center animate-pulse">
-          <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-2xl font-bold mb-2">Creating Your Perfect Itinerary...</h2>
-          <p className="text-gray-400">Our AI is crafting personalized experiences just for you.</p>
+      <div className="min-h-screen bg-gray-100 text-gray-800 flex items-center justify-center p-4">
+        <div className="text-center">
+          <Zap className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+          <h2 className="text-2xl font-bold mb-2 text-gray-700">Could Not Generate Itinerary</h2>
+          <p className="text-gray-500">The AI response could not be parsed. Please try again with different interests.</p>
+          <Button onClick={onStartOver} className="mt-6">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Start Over
+          </Button>
         </div>
       </div>
     );
   }
 
+  const totalBudget = itinerary.reduce((sum, day) => sum + day.totalCost, 0);
+
+  const ActivityIcon = ({ theme }) => {
+    // A simple function to return an icon based on the activity theme
+    if (!theme) return <Briefcase size={20} className="text-blue-500" />;
+    const lowerTheme = theme.toLowerCase();
+    if (lowerTheme.includes('food') || lowerTheme.includes('cuisine')) return <Utensils size={20} className="text-orange-500" />;
+    if (lowerTheme.includes('culture') || lowerTheme.includes('history')) return <Briefcase size={20} className="text-indigo-500" />;
+    if (lowerTheme.includes('adventure')) return <Zap size={20} className="text-red-500" />;
+    if (lowerTheme.includes('nature')) return <Sun size={20} className="text-green-500" />;
+    if (lowerTheme.includes('photo')) return <Camera size={20} className="text-purple-500" />;
+    return <Briefcase size={20} className="text-blue-500" />;
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-gray-200 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10 animate-fade-in">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Your {preferences.destination} Adventure
+    <div className="min-h-screen bg-gray-50 text-slate-800 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto">
+        {/* --- HEADER --- */}
+        <div className="text-center mb-12 animate-fade-in">
+          <p className="text-lg font-semibold text-blue-600">Your Personalized Itinerary</p>
+          <h1 className="mt-2 text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
+            Exploring {preferences.destination}
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-4">
-            A {preferences.days}-day itinerary crafted just for you, based on your interests and budget.
+          <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+            A {preferences.days}-day adventure crafted just for you.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 text-sm">
-            <Badge variant="outline" className="flex items-center gap-1 border-purple-400 text-purple-400">
-              <Calendar size={14} />
-              {preferences.days} days
-            </Badge>
-            <Badge variant="outline" className="flex items-center gap-1 border-purple-400 text-purple-400">
-              <DollarSign size={14} />
-              ${totalBudget} estimated
-            </Badge>
-            <Badge variant="outline" className="flex items-center gap-1 border-purple-400 text-purple-400">
-              <Users size={14} />
-              {preferences.travelStyle}
-            </Badge>
-          </div>
         </div>
 
-        {/* Daily Itineraries */}
-        <div className="space-y-8">
+        {/* --- TRIP SUMMARY CARD --- */}
+        <Card className="mb-10 p-6 bg-white shadow-lg rounded-2xl border border-gray-200 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div className="flex flex-col items-center">
+              <Calendar className="h-8 w-8 text-blue-500 mb-2" />
+              <p className="font-semibold text-slate-800">{preferences.days} Days</p>
+              <p className="text-sm text-slate-500">Duration</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <DollarSign className="h-8 w-8 text-green-500 mb-2" />
+              <p className="font-semibold text-slate-800">${totalBudget}</p>
+              <p className="text-sm text-slate-500">Est. Budget</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Users className="h-8 w-8 text-purple-500 mb-2" />
+              <p className="font-semibold text-slate-800 capitalize">{preferences.travelStyle}</p>
+              <p className="text-sm text-slate-500">Travel Style</p>
+            </div>
+             <div className="flex flex-col items-center col-span-2 md:col-span-1">
+              <Compass className="h-8 w-8 text-orange-500 mb-2" />
+              <div className="flex flex-wrap justify-center gap-1">
+                {preferences.interests.map(interest => (
+                  <Badge key={interest} variant="secondary" className="capitalize">{interest}</Badge>
+                ))}
+              </div>
+              <p className="text-sm text-slate-500 mt-1">Interests</p>
+            </div>
+          </div>
+        </Card>
+
+        {/* --- ITINERARY DAYS --- */}
+        <div className="space-y-12">
           {itinerary.map((day, index) => (
-            <Card key={day.day} className="shadow-2xl animate-slide-up bg-gray-800/60 backdrop-blur-md border-gray-700" style={{ animationDelay: `${index * 0.1}s` }}>
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-                      {day.day}
-                    </div>
-                    <div>
-                      <div className="text-2xl font-semibold text-white">{day.date}</div>
-                      <div className="text-sm text-gray-400 font-normal">{day.theme}</div>
-                    </div>
-                  </div>
-                  <Badge className="text-white bg-purple-500/20 hover:bg-purple-500/30 border-purple-500">
-                    ${day.totalCost} est.
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {day.items.map((item, itemIndex) => (
-                    <div key={itemIndex} className="relative flex gap-4 pl-12">
-                      {/* Timeline dot and line */}
-                      <div className="absolute left-0 top-0 h-full w-px bg-gray-700">
-                        <div className="w-4 h-4 rounded-full bg-purple-500 absolute top-0 -left-2" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-1">
-                          <h4 className="font-semibold text-white text-lg">{item.activity}</h4>
-                          <Badge className="ml-2 text-xs font-semibold bg-gray-700 text-gray-200">{item.cost}</Badge>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
-                          <MapPin size={14} className="text-cyan-400" />
-                          <span>{item.location}</span>
-                          <span className="text-xs text-purple-400 font-medium ml-auto">{item.duration}</span>
-                        </div>
-                        <p className="text-sm text-gray-400">{item.description}</p>
-                      </div>
-                    </div>
-                  ))}
+            <div key={day.day} className="animate-slide-up" style={{ animationDelay: `${0.2 + index * 0.1}s` }}>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-md">
+                  {day.day}
                 </div>
-              </CardContent>
-            </Card>
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-900">{day.date}</h2>
+                  <p className="text-md text-slate-500 font-medium">{day.theme}</p>
+                </div>
+              </div>
+              
+              <div className="relative pl-8 border-l-2 border-gray-200">
+                {day.items.map((item, itemIndex) => (
+                  <div key={itemIndex} className="mb-8 relative">
+                    <div className="absolute -left-[2.1rem] top-1 h-10 w-10 bg-white rounded-full flex items-center justify-center border-2 border-gray-200">
+                       <ActivityIcon theme={day.theme}/>
+                    </div>
+                    <Card className="ml-6 bg-white shadow-lg rounded-xl border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                       <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-bold text-lg text-slate-800">{item.activity}</h4>
+                            <Badge variant="outline" className="text-sm font-semibold text-green-600 border-green-200 bg-green-50">{item.cost}</Badge>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-slate-500 mb-3">
+                            <MapPin size={14} className="text-gray-400" />
+                            <span>{item.location}</span>
+                          </div>
+                          <p className="text-slate-600 leading-relaxed">{item.description}</p>
+                       </CardContent>
+                    </Card>
+                  </div>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mt-10 animate-fade-in">
+        {/* --- ACTION BUTTONS --- */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-16 animate-fade-in" style={{ animationDelay: '0.8s' }}>
           <Button
             variant="outline"
             onClick={onBack}
-            className="flex-1 text-purple-400 hover:bg-purple-900 border-purple-400"
+            className="flex-1 py-6 text-lg bg-white border-gray-300 text-slate-700 hover:bg-gray-100 hover:text-slate-900"
           >
             <ChevronLeft className="mr-2 h-5 w-5" />
             Modify Preferences
           </Button>
           <Button
             onClick={onStartOver}
-            className="flex-1 bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold hover:opacity-90 shadow-lg"
+            className="flex-1 py-6 text-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold hover:opacity-90 shadow-lg"
           >
             Plan Another Trip
             <ChevronRight className="ml-2 h-5 w-5" />
@@ -501,13 +437,15 @@ const ItineraryDisplay = ({ preferences, onBack, onStartOver }) => {
 const Index = () => {
   const [currentState, setCurrentState] = useState("hero");
   const [travelPreferences, setTravelPreferences] = useState(null);
+  const [itineraryData, setItineraryData] = useState(null);
 
   const handleGetStarted = () => {
     setCurrentState("questionnaire");
   };
 
-  const handleQuestionnaireSubmit = (preferences) => {
+  const handleQuestionnaireSubmit = (itinerary, preferences) => {
     setTravelPreferences(preferences);
+    setItineraryData(itinerary);
     setCurrentState("itinerary");
   };
 
@@ -517,6 +455,7 @@ const Index = () => {
 
   const handleStartOver = () => {
     setTravelPreferences(null);
+    setItineraryData(null);
     setCurrentState("hero");
   };
 
@@ -532,8 +471,9 @@ const Index = () => {
           />
         );
       case "itinerary":
-        return travelPreferences ? (
+        return itineraryData && travelPreferences ? (
           <ItineraryDisplay
+            itinerary={itineraryData}
             preferences={travelPreferences}
             onBack={handleBackToQuestionnaire}
             onStartOver={handleStartOver}
