@@ -12,6 +12,7 @@ import TransportInfo from './pages/TransportInfo';
 import Feedback from './pages/Feedback';
 import AdminDashboard from './pages/AdminDashboard';
 
+
 function App() {
   const [showNavbar, setShowNavbar] = useState(false);
   const location = useLocation();
@@ -45,6 +46,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
+     
     </div>
   );
 }
