@@ -1,102 +1,217 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaPlay, FaMobileAlt, FaSearch, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+import fallbackData from '../data/fallbackARVRData';
+
 const ARVRPreview = () => {
-  const experiences = [
-    {
-      id: 1,
-      title: 'Netarhat - The Queen of Chotanagpur',
-      description: 'Experience the breathtaking views and pleasant climate of Netarhat through our immersive 360° virtual tour.',
-      image: 'https://via.placeholder.com/800x450?text=Netarhat+360',
-      type: '360° Virtual Tour',
-      duration: '5-10 min',
-    },
-    {
-      id: 2,
-      title: 'Betla National Park Safari',
-      description: 'Get up close with wildlife in this augmented reality safari experience through Betla National Park.',
-      image: 'https://via.placeholder.com/800x450?text=Betla+Safari',
-      type: 'AR Experience',
-      duration: '8-12 min',
-    },
-    {
-      id: 3,
-      title: 'Jagannath Temple, Ranchi',
-      description: 'Explore the architectural marvel of Jagannath Temple in Ranchi through our detailed 3D model.',
-      image: 'https://via.placeholder.com/800x450?text=Jagannath+Temple',
-      type: '3D Model',
-      duration: '3-5 min',
-    },
-    {
-      id: 4,
-      title: 'Hundru Falls',
-      description: 'Experience the majestic Hundru Falls through our virtual reality experience that makes you feel like you\'re really there.',
-      image: 'https://via.placeholder.com/800x450?text=Hundru+Falls',
-      type: 'VR Experience',
-      duration: '7-10 min',
-    },
-  ];
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState('all');
+  const navigate = useNavigate();
+  
+  // Use local data directly
+  const experiences = fallbackData;
+  const loading = false;
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Search is handled in the filteredExperiences calculation
+  };
+
+  const filterByType = (type) => {
+    setFilterType(type);
+    // Filtering is handled in the filteredExperiences calculation
+  };
+
+  // Filter experiences based on search query and type
+  const filteredExperiences = experiences.filter(exp => {
+    const matchesSearch = exp.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         exp.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesType = filterType === 'all' || exp.media.type === filterType;
+    return matchesSearch && matchesType;
+  });
+
+  const getTypeBadgeClass = (type) => {
+    switch(type.toLowerCase()) {
+      case 'ar':
+        return 'bg-blue-100 text-blue-800';
+      case 'vr':
+        return 'bg-purple-100 text-purple-800';
+      case '360':
+        return 'bg-green-100 text-green-800';
+      case '3d':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <FaSpinner className="animate-spin text-4xl text-primary-600 mx-auto mb-4" />
+          <p className="text-lg text-gray-600">Loading experiences...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen-main py-12 px-4">
+    <div className="min-h-screen-main py-12 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">AR/VR Previews</h1>
+          <h1 className="text-4xl font-bold mb-4 text-gray-900">AR/VR Previews</h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Experience the beauty of Jharkhand's top destinations through immersive augmented and virtual reality previews
           </p>
+          
+          {/* Search Bar */}
+          <div className="max-w-2xl mx-auto mt-8">
+            <form onSubmit={handleSearch} className="flex gap-2">
+              <div className="relative flex-1">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaSearch className="h-5 w-5 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Search experiences..."
+                />
+              </div>
+              <button
+                type="submit"
+                className="px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+              >
+                Search
+              </button>
+            </form>
+          </div>
+          
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap justify-center gap-3 mt-6">
+            <button
+              onClick={() => filterByType('all')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filterType === 'all' 
+                  ? 'bg-primary-600 text-white' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              All Experiences
+            </button>
+            <button
+              onClick={() => filterByType('360')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filterType === '360' 
+                  ? 'bg-green-100 text-green-800 border border-green-200' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              360° Tours
+            </button>
+            <button
+              onClick={() => filterByType('ar')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filterType === 'ar' 
+                  ? 'bg-blue-100 text-blue-800 border border-blue-200' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              AR Experiences
+            </button>
+            <button
+              onClick={() => filterByType('vr')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filterType === 'vr' 
+                  ? 'bg-purple-100 text-purple-800 border border-purple-200' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              VR Experiences
+            </button>
+            <button
+              onClick={() => filterByType('3d')}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                filterType === '3d' 
+                  ? 'bg-yellow-100 text-yellow-800 border border-yellow-200' 
+                  : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
+              }`}
+            >
+              3D Models
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="relative h-64 bg-gray-200">
-              <img 
-                src="https://via.placeholder.com/800x450?text=VR+Headset+Demo" 
-                alt="VR Experience"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                <div className="bg-white bg-opacity-90 rounded-full p-4">
-                  <svg className="w-12 h-12 text-primary-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                  </svg>
+        {/* Experience Grid */}
+        {experiences.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {experiences.map((experience) => (
+              <div 
+                key={experience.id} 
+                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col h-full"
+                onClick={() => navigate(`/ar-vr/${experience.id}`)}
+              >
+                <div className="relative h-48 bg-gray-200 overflow-hidden group">
+                  <img 
+                    src={experience.image} 
+                    alt={experience.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://via.placeholder.com/800x450?text=Image+Not+Available';
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="bg-white bg-opacity-90 rounded-full p-3 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      {experience.media.type === 'ar' ? (
+                        <FaMobileAlt className="w-8 h-8 text-blue-600" />
+                      ) : (
+                        <FaPlay className="w-8 h-8 text-primary-600" />
+                      )}
+                    </div>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getTypeBadgeClass(experience.media.type)}`}>
+                      {experience.type}
+                    </span>
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{experience.title}</h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{experience.description}</p>
+                  
+                  <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <div className="flex items-center text-sm text-gray-500">
+                      <FaMapMarkerAlt className="mr-1" />
+                      <span>{experience.location?.name || 'Jharkhand'}</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-500">
+                      <FaClock className="mr-1" />
+                      <span>{experience.duration}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">Virtual Reality Experiences</h2>
-              <p className="text-gray-600 mb-4">
-                Put on your VR headset and be transported to Jharkhand's most beautiful locations from the comfort of your home.
-              </p>
-              <button className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors">
-                View All VR Tours
-              </button>
-            </div>
+            ))}
           </div>
-
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="relative h-64 bg-gray-200">
-              <img 
-                src="https://via.placeholder.com/800x450?text=AR+Phone+Demo" 
-                alt="AR Experience"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                <div className="bg-white bg-opacity-90 rounded-full p-4">
-                  <svg className="w-12 h-12 text-primary-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className="p-6">
-              <h2 className="text-2xl font-bold mb-2">Augmented Reality Previews</h2>
-              <p className="text-gray-600 mb-4">
-                Use your smartphone to bring Jharkhand's landmarks into your space with our AR technology.
-              </p>
-              <button className="bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors">
-                Try AR Now
-              </button>
-            </div>
+        ) : (
+          <div className="text-center py-12">
+            <h3 className="text-xl font-medium text-gray-700 mb-2">No experiences found</h3>
+            <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+            <button 
+              onClick={() => {
+                setSearchQuery('');
+                setFilterType('all');
+                filterByType('all');
+              }}
+              className="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              Clear Filters
+            </button>
           </div>
-        </div>
+        )}
 
         <h2 className="text-2xl font-bold mb-6">Featured Experiences</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -51,7 +51,6 @@ const travelStyles = [
   { id: "budget", name: "Budget Explorer", icon: "💰", description: "Maximum value, minimum cost" },
   { id: "balanced", name: "Smart Traveler", icon: "⚖️", description: "Best of both worlds" },
   { id: "luxury", name: "Luxury Seeker", icon: "✨", description: "Premium experiences only" },
-  { id: "adventure", name: "Thrill Seeker", icon: "🏔️", description: "High energy activities" },
 ];
 
 // Hero Section Component
@@ -59,8 +58,11 @@ const HeroSection = ({ onGetStarted }) => {
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background">
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out animate-zoom-in"
-        style={{ backgroundImage: `url(${heroImage})` }}
+        className="fixed inset-0 bg-cover bg-center bg-no-repeat transition-transform duration-1000 ease-out animate-zoom-in"
+        style={{
+          backgroundImage: `url(${heroImage})`,
+          zIndex: 0
+        }}
       >
         <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       </div>
